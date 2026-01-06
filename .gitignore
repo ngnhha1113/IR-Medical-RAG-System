@@ -1,0 +1,59 @@
+<<<<<<< HEAD
+# Folder ảo hóa
+venv/
+env/
+.env
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Database
+chroma_db/
+./chroma_db
+
+# File hệ thống & Editor (Thêm dòng này vào để sửa lỗi của bạn)
+.vs/
+.vscode/
+*.vsidx
+.DS_Store
+Thumbs.db
+=======
+# Bỏ qua folder ảo Python
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Bỏ qua Database và Dataset (Nặng)
+chroma_db_nih/
+images/
+*.csv
+*.zip
+*.png
+*.jpg
+*.dcm
+
+# Bỏ qua file cấu hình hệ thống
+.DS_Store
+.vscode/
+.idea/
+# Visual Studio temporary files
+.vs/
+*.user
+*.suo
+*.slnx
+bin/
+obj/
+>>>>>>> b37cd91 (Upload medical retrieval project)
+.vs/
+*.user
+*.suo
+*.slnx
+FileContentIndex/
+
+# Build results
+bin/
+obj/
+debug/
+release/
