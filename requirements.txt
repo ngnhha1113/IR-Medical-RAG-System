@@ -5,3 +5,7 @@ streamlit
 Pillow
 matplotlib
 tqdm
+streamlit-cropper
+opencv-python
+scikit-learn
+plotly
