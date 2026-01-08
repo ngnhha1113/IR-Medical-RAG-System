@@ -1,19 +1,4 @@
 ﻿import streamlit as st
-<<<<<<< HEAD
-from PIL import Image
-import os
-
-# Import backend modules
-from backend.embedding import MedicalEmbedder
-from backend.vector_db import VectorDB
-
-# Page Configuration
-st.set_page_config(page_title="Med-X Retrieval", layout="wide")
-
-# --- CONFIGURATION ---
-# POINT THIS TO YOUR ACTUAL DATA FOLDER
-DATASET_PATH = "Data/train" 
-=======
 import os
 import numpy as np
 import pandas as pd
@@ -37,95 +22,11 @@ INITIAL_SHOW = 8
 MAX_FETCH = 80
 
 st.set_page_config(page_title="Med-X Pro Universe", layout="wide")
->>>>>>> b37cd91 (Upload medical retrieval project)
 
 @st.cache_resource
 def load_resources():
     embedder = MedicalEmbedder()
     db = VectorDB()
-<<<<<<< HEAD
-    
-    # Check if dataset exists and index it
-    if os.path.exists(DATASET_PATH):
-        db.index_dataset(embedder, DATASET_PATH)
-    else:
-        print(f"⚠️ WARNING: Dataset path '{DATASET_PATH}' not found.")
-        
-    return embedder, db
-
-def main():
-    st.title("🩻 Med-X: Medical Image Retrieval System")
-    st.caption(f"AI Assistant linked to dataset: {DATASET_PATH}")
-
-    # Load AI
-    with st.spinner("Initializing AI System..."):
-        embedder, db = load_resources()
-
-    col1, col2 = st.columns([1, 2])
-
-    # --- Left: Input ---
-    with col1:
-        st.subheader("1. Input Image")
-        uploaded_file = st.file_uploader("Upload X-Ray", type=["jpg", "png", "jpeg"])
-        
-        if uploaded_file:
-            temp_path = f"temp_{uploaded_file.name}"
-            with open(temp_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            
-            st.image(uploaded_file, caption="Query Image", use_column_width=True)
-            
-            if st.button("🔍 Analyze & Search", type="primary"):
-                with st.spinner("Searching database..."):
-                    query_vector = embedder.encode_image(temp_path)
-                    results = db.search(query_vector, top_k=4)
-                    st.session_state['search_results'] = results
-            
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
-
-    # --- Right: Results ---
-    with col2:
-        st.subheader("2. Retrieval Results")
-        
-        if 'search_results' in st.session_state:
-            results = st.session_state['search_results']
-            
-            # Check if results are empty or None
-            if results is None or not results['ids'][0]:
-                st.error("❌ No results found in Database!")
-                st.warning("Tip: Check if the 'Data/train' folder exists and is not empty.")
-            else:
-                metadatas = results['metadatas'][0]
-                distances = results['distances'][0]
-
-                for i in range(0, len(metadatas), 2):
-                    cols = st.columns(2)
-                    for j in range(2):
-                        if i + j < len(metadatas):
-                            item = metadatas[i+j]
-                            score = 1 - distances[i+j]
-                            
-                            with cols[j]:
-                                # Display image
-                                if os.path.exists(item['path']):
-                                    st.image(item['path'], width=200)
-                                else:
-                                    st.image("https://via.placeholder.com/200?text=Image+Not+Found", width=200)
-                                
-                                st.markdown(f"**Case #{i+j+1}** (Sim: {score:.1%})")
-                                
-                                # Color code the diagnosis
-                                diag = item['diagnosis']
-                                color = "green" if "Normal" in diag else "red"
-                                st.markdown(f":{color}[**{diag}**]")
-                                
-                                with st.expander("Details"):
-                                    st.write(f"**File:** {item['filename']}")
-                                    st.write(f"**Guideline:** {item['guideline']}")
-        else:
-            st.info("👈 Upload an image to start.")
-=======
     if os.path.exists(IMAGE_FOLDER_PATH) and os.path.exists(CSV_PATH):
         db.index_dataset(embedder, CSV_PATH, IMAGE_FOLDER_PATH)
     return embedder, db
@@ -174,7 +75,7 @@ def visualize_statistics(results):
         st.subheader("1. Dự báo nguy cơ")
         st.bar_chart(df_disease['count'], color="#FF4B4B")
         if not df_disease.empty:
-            st.success(f"📌 **{df_disease.iloc[0]['percentage']:.1f}%** ca tương đồng **{df_disease.index[0]}**.")
+            st.success(f"📌 **{df_disease.iloc[0]['percentage']:.1f}%** ca tương đồng bị **{df_disease.index[0]}**.")
     with col2:
         st.subheader("2. Giới tính")
         gender_counts = Counter(genders)
@@ -210,7 +111,7 @@ def main():
 
     # --- THÊM TAB 5: VŨ TRỤ BỆNH LÝ ---
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "🔍 Tìm kiếm", "➕ Ảnh + Text", "✂️ ROI", "🔥 Heatmap", "🌌 Spatial Analysis"
+        "🔍 Tìm kiếm", "➕ Ảnh + Text", "✂️ ROI", "🔥 Heatmap", "🌌 Vũ trụ Bệnh lý"
     ])
 
     def run_search(vector):
@@ -297,7 +198,6 @@ def main():
 
             st.divider()
             visualize_statistics(full)
->>>>>>> b37cd91 (Upload medical retrieval project)
 
 if __name__ == "__main__":
     main()

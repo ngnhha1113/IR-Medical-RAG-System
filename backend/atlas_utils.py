@@ -14,10 +14,11 @@ def get_atlas_data(db, limit=1500):
         limit=limit
     )
     
-    # --- SỬA LỖI VALUE ERROR TẠI ĐÂY ---
-    # Kiểm tra an toàn: Nếu không có embeddings hoặc danh sách rỗng
+    # --- SỬA LỖI 1: Kiểm tra độ dài thay vì kiểm tra boolean ---
+    # Fix lỗi "The truth value of an array is ambiguous"
     if data['embeddings'] is None or len(data['embeddings']) == 0:
-        return None, None, None # Trả về 3 giá trị None
+        # --- SỬA LỖI 2: Trả về 3 giá trị None để khớp với hàm gọi ---
+        return None, None, None 
 
     embeddings = np.array(data["embeddings"])
     metadatas = data["metadatas"]
@@ -29,7 +30,7 @@ def get_atlas_data(db, limit=1500):
         # Lấy bệnh đầu tiên trong danh sách (VD: "Infiltration|Mass" -> "Infiltration")
         primary_disease = meta.get("diagnosis", "Unknown").split("|")[0]
         
-        # Gom các bệnh phổ biến, còn lại đưa vào Others
+        # Gom các bệnh phổ biến, còn lại đưa vào Others để biểu đồ đỡ rối
         common_diseases = ["Pneumonia", "Infiltration", "Atelectasis", "Effusion", "Nodule", "No Finding", "Cardiomegaly", "Mass"]
         
         if primary_disease in common_diseases:
@@ -44,8 +45,8 @@ def get_atlas_data(db, limit=1500):
 def visualize_3d_atlas(db, input_image_vector=None):
     """
     Vẽ biểu đồ 3D:
-    - Các điểm mờ: Dữ liệu nền (Atlas).
-    - Ngôi sao đỏ: Ảnh người dùng vừa upload.
+    - Các điểm tròn: Dữ liệu nền (Atlas).
+    - Hình thoi đỏ: Ảnh người dùng vừa upload.
     """
     # 1. Lấy dữ liệu nền
     embeddings, labels, filenames = get_atlas_data(db)
@@ -59,10 +60,11 @@ def visualize_3d_atlas(db, input_image_vector=None):
         input_vec = np.array(input_image_vector).reshape(1, -1)
         # Nối vector input vào cuối danh sách
         all_vectors = np.vstack([embeddings, input_vec])
-        # Thêm nhãn cho điểm này
+        # Thêm nhãn riêng cho điểm này
         labels.append("YOUR IMAGE") 
         filenames.append("Input Upload")
-        is_user_input = [False] * len(embeddings) + [True] # Đánh dấu điểm cuối là User
+        # Đánh dấu điểm cuối cùng là User (True)
+        is_user_input = [False] * len(embeddings) + [True] 
     else:
         all_vectors = embeddings
         is_user_input = [False] * len(embeddings)
@@ -95,7 +97,7 @@ def visualize_3d_atlas(db, input_image_vector=None):
         hover_data=['filename', 'label'],
         opacity=0.7,
         title="Vũ trụ Bệnh lý (3D Vector Space)",
-        color_discrete_map={"YOUR IMAGE": "#FF0000"} # Màu đỏ cho ảnh user
+        color_discrete_map={"YOUR IMAGE": "#FF0000"} # Màu đỏ nổi bật cho ảnh user
     )
 
     # Tinh chỉnh giao diện
